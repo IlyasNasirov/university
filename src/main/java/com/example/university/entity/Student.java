@@ -1,5 +1,6 @@
 package com.example.university.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
