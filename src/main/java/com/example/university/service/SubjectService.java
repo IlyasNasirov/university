@@ -8,6 +8,7 @@ import com.example.university.mapper.SubjectMapper;
 import com.example.university.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +32,7 @@ public class SubjectService {
                 .map(subjectMapper::entityToDto)
                 .collect(Collectors.toList());
     }
-
+    @Transactional
     public SubjectDto saveSubject(SubjectDto Dto) {
         Subject subject = subjectMapper.dtoToEntity(Dto);
         subjectRepository.save(subject);
