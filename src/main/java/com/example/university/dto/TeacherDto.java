@@ -1,5 +1,6 @@
 package com.example.university.dto;
 
+import com.example.university.entity.Student;
 import com.example.university.entity.Subject;
 import lombok.Data;
 
@@ -13,5 +14,4 @@ public class TeacherDto {
     private String lastName;
     private String middleName;
     private int age;
-    private List<Subject> subjects;
 }

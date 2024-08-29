@@ -1,7 +1,10 @@
 package com.example.university.dto;
 
+import com.example.university.entity.Teacher;
 import com.sun.istack.NotNull;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class StudentDto {
@@ -14,4 +17,5 @@ public class StudentDto {
     private String middleName;
 
     private int age;
+
 }

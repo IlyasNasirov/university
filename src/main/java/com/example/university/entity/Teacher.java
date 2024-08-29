@@ -27,6 +27,15 @@ public class Teacher {
     @JsonManagedReference
     private List<Subject> subjects;
 
+    @ManyToMany
+    @JoinTable(
+            name = "teacher_student",
+            joinColumns = @JoinColumn(name = "teacher_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    @JsonManagedReference
+    private List<Student> students;
+
     public void addSubject(Subject subject){
         subjects.add(subject);
         subject.setTeacher(this);
@@ -35,16 +44,6 @@ public class Teacher {
         subjects.remove(subject);
         subject.setTeacher(null);
     }
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Teacher teacher = (Teacher) o;
-        return Objects.equals(id, teacher.id);
-    }
+
 }

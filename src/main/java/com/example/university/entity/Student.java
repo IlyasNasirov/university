@@ -1,9 +1,11 @@
 package com.example.university.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -16,5 +18,9 @@ public class Student {
     private String lastName;
     private String middleName;
     private int age;
+
+    @ManyToMany(mappedBy = "students")
+    @JsonBackReference
+    private List<Teacher> teachers;
 
 }

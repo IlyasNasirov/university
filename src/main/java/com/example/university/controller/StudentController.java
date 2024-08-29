@@ -1,6 +1,8 @@
 package com.example.university.controller;
 
 import com.example.university.dto.StudentDto;
+import com.example.university.dto.SubjectDto;
+import com.example.university.dto.TeacherDto;
 import com.example.university.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +25,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentDto> getStById(@PathVariable int id){
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable int id){
         StudentDto studentDto= service.getStudentById(id);
         return studentDto !=null ? ResponseEntity.ok(studentDto):ResponseEntity.notFound().build();
     }
@@ -35,10 +37,37 @@ public class StudentController {
         StudentDto dto= service.saveStudent(studentDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable int id,@RequestBody StudentDto studentDto){
+        try{
+            service.updateStudent(id,studentDto);
+            return ResponseEntity.ok(studentDto);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     @DeleteMapping("/{id}")
-    public String deleteStById(@PathVariable int id){
+    public String deleteStudentById(@PathVariable int id){
         service.deleteStudent(id);
         return "Successful";
+    }
+    @PutMapping("/{id}/teachers")
+    public ResponseEntity<String> addTeacherForStudent(@PathVariable int id, @RequestParam int setTeacher) {
+        try {
+            service.setTeacherForStudent(id, setTeacher);
+            return ResponseEntity.ok().body("Added teacher to student");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot add teacher to student");
+        }
+    }
+
+    @GetMapping("/{id}/teachers")
+    public ResponseEntity<List<TeacherDto>> getAllTeachersForStudents(@PathVariable int id){
+        try{
+           return ResponseEntity.ok(service.getAllTeachersOfStudent(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 

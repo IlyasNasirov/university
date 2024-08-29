@@ -1,21 +1,18 @@
 package com.example.university.service;
 
-import com.example.university.dto.StudentDto;
 import com.example.university.dto.SubjectDto;
-import com.example.university.entity.Student;
 import com.example.university.entity.Subject;
 import com.example.university.mapper.SubjectMapper;
 import com.example.university.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class SubjectService {
+public class SubjectServiceImpl implements SubjectService{
 
     @Autowired
     SubjectRepository subjectRepository;
@@ -42,4 +39,8 @@ public class SubjectService {
         subjectRepository.deleteById(id);
     }
 
+    @Override
+    public SubjectDto updateSubject(int id) {
+        return null;
+    }
 }
