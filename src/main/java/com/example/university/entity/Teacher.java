@@ -25,7 +25,7 @@ public class Teacher {
 
     @OneToMany(mappedBy = "teacher", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE, CascadeType.REFRESH}, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Subject> subjects;
+    private List<Subject> subjects;
 
     public void addSubject(Subject subject){
         subjects.add(subject);

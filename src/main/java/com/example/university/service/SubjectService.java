@@ -25,14 +25,13 @@ public class SubjectService {
         Optional<Subject> optional = subjectRepository.findById(id);
         return optional.map(subjectMapper::entityToDto).orElse(null);
     }
-
     public List<SubjectDto> getAllSubjects() {
         List<Subject> list = subjectRepository.findAll();
         return list.stream()
                 .map(subjectMapper::entityToDto)
                 .collect(Collectors.toList());
     }
-    @Transactional
+
     public SubjectDto saveSubject(SubjectDto Dto) {
         Subject subject = subjectMapper.dtoToEntity(Dto);
         subjectRepository.save(subject);

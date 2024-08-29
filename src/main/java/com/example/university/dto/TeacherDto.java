@@ -3,6 +3,7 @@ package com.example.university.dto;
 import com.example.university.entity.Subject;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -12,5 +13,5 @@ public class TeacherDto {
     private String lastName;
     private String middleName;
     private int age;
-    private Set<Subject> subjects;
+    private List<Subject> subjects;
 }

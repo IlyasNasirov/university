@@ -59,24 +59,28 @@ public class TeacherService {
         }
     }
 
-    public void addSubject(int id, Subject subject) {
+    public void addSubject(int id, SubjectDto subjectDto) {
+        Subject subject=SubjectMapper.INSTANCE.dtoToEntity(subjectDto);
         Teacher teacher = teacherRepository.findById(id).orElse(null);
-        Optional<Subject> optional = subjectRepository.findByNameIgnoreCase(subject.getName());
-        if(optional.isPresent()) {
-            teacher.setSubjects(Set.of(optional.get()));
-            subject.setTeacher(teacher);
-            teacherRepository.save(teacher);
-        }else {
-            teacher.addSubject(subject);
-            teacherRepository.save(teacher);
-        }
+//        Optional<Subject> optional = subjectRepository.findByNameIgnoreCase(subject.getName());
+        teacher.addSubject(subject);
+
+        teacherRepository.save(teacher);
+//        if(optional.isPresent()) {
+//            teacher.setSubjects(List.of(subject));
+//            subject.setTeacher(teacher);
+//            teacherRepository.save(teacher);
+//        }else {
+//            teacher.addSubject(subject);
+//            teacherRepository.save(teacher);
+//        }
     }
 
-    public Set<SubjectDto> getAllSubjectsForTeacher(int id) {
+    public List<SubjectDto> getAllSubjectsForTeacher(int id) {
         Teacher teacher = teacherRepository.findById(id).orElse(null);
         assert teacher != null;
-        Set<Subject> subjects = teacher.getSubjects();
-        return subjects.stream().map(SubjectMapper.INSTANCE::entityToDto).collect(Collectors.toSet());
+        List<Subject> subjects = teacher.getSubjects();
+        return subjects.stream().map(SubjectMapper.INSTANCE::entityToDto).collect(Collectors.toList());
     }
 
 }
