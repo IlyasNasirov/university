@@ -40,8 +40,8 @@ public class StudentController {
     @PutMapping("/{id}")
     public ResponseEntity<StudentDto> updateStudent(@PathVariable int id,@RequestBody StudentDto studentDto){
         try{
-            service.updateStudent(id,studentDto);
-            return ResponseEntity.ok(studentDto);
+           StudentDto dto= service.updateStudent(id,studentDto);
+            return ResponseEntity.ok(dto);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -57,16 +57,33 @@ public class StudentController {
             service.setTeacherForStudent(id, setTeacher);
             return ResponseEntity.ok().body("Added teacher to student");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Cannot add teacher to student");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/{id}/teachers")
-    public ResponseEntity<List<TeacherDto>> getAllTeachersForStudents(@PathVariable int id){
+    public ResponseEntity<List<TeacherDto>> getAllTeachersForStudent(@PathVariable int id){
         try{
            return ResponseEntity.ok(service.getAllTeachersOfStudent(id));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @GetMapping("/{id}/subjects")
+    public ResponseEntity<List<SubjectDto>> getAllSubjectsForStudent(@PathVariable int id){
+        try {
+            return ResponseEntity.ok(service.getAllSubjectsOfStudent(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    @PutMapping("/{id}/subjects")
+    public ResponseEntity<String> addSubjectForStudent(@PathVariable int id, @RequestParam int setSubject){
+        try {
+            service.setSubjectForStudent(id,setSubject);
+            return ResponseEntity.ok().body("Added subject to student");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

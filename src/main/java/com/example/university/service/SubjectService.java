@@ -12,5 +12,6 @@ public interface SubjectService {
     SubjectDto saveSubject(SubjectDto Dto);
 
     void deleteSubject(int id);
-    SubjectDto updateSubject(int id);
+
+    SubjectDto updateSubject(int id,SubjectDto subjectDto);
 }

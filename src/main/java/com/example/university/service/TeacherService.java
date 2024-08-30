@@ -9,9 +9,9 @@ public interface TeacherService {
 
     List<TeacherDto> getAllTeachers();
 
-    TeacherDto getTeacherById(int id);
-
     TeacherDto saveTeacher(TeacherDto teacherDto);
+
+    TeacherDto updateTeacher(int id, TeacherDto teacherDto);
 
     void deleteTeacher(int id);
 
@@ -20,8 +20,6 @@ public interface TeacherService {
     void addSubject(int id, SubjectDto subjectDto);
 
     List<SubjectDto> getAllSubjectsForTeacher(int id);
-
-    TeacherDto updateTeacher(int id, TeacherDto teacherDto);
 
     void deleteSubject(int teacherId, int subjectId);
 }

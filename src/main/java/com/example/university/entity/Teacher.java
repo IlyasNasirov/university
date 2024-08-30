@@ -36,14 +36,6 @@ public class Teacher {
     @JsonManagedReference
     private List<Student> students;
 
-    public void addSubject(Subject subject){
-        subjects.add(subject);
-        subject.setTeacher(this);
-    }
-    public void removeSubject(Subject subject){
-        subjects.remove(subject);
-        subject.setTeacher(null);
-    }
 
 
 }

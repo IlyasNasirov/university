@@ -1,6 +1,7 @@
 package com.example.university.service;
 
 import com.example.university.dto.StudentDto;
+import com.example.university.dto.SubjectDto;
 import com.example.university.dto.TeacherDto;
 
 import java.util.List;
@@ -19,4 +20,10 @@ public interface StudentService {
     List<TeacherDto> getAllTeachersOfStudent(int studentId);
 
     void setTeacherForStudent(int studentId, int TeacherId);
+
+    List<SubjectDto> getAllSubjectsOfStudent(int studentId);
+
+    void setSubjectForStudent(int studentId, int subjectId);
+
+
 }

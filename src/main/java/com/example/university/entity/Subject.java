@@ -5,6 +5,7 @@ import lombok.Data;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -22,16 +23,7 @@ public class Subject {
     @JsonBackReference
     private Teacher teacher;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Subject subject = (Subject) o;
-        return Objects.equals(id, subject.id);
-    }
+    @ManyToMany(mappedBy = "subjects")
+    @JsonBackReference
+    private List<Student> students;
 }

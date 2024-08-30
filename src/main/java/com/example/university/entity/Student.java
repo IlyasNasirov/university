@@ -1,6 +1,7 @@
 package com.example.university.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.NotNull;
 import lombok.Data;
 
@@ -22,5 +23,15 @@ public class Student {
     @ManyToMany(mappedBy = "students")
     @JsonBackReference
     private List<Teacher> teachers;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_subject",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    @JsonManagedReference
+    private List<Subject> subjects;
+
 
 }

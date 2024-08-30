@@ -40,7 +40,10 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
-    public SubjectDto updateSubject(int id) {
-        return null;
+    public SubjectDto updateSubject(int id,SubjectDto subjectDto) {
+       Subject subject=subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Student is not exist"));
+       subject.setName(subjectDto.getName());
+       subjectRepository.save(subject);
+       return subjectMapper.entityToDto(subject);
     }
 }

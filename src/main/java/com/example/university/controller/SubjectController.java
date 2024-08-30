@@ -1,6 +1,8 @@
 package com.example.university.controller;
 
+import com.example.university.dto.StudentDto;
 import com.example.university.dto.SubjectDto;
+import com.example.university.entity.Subject;
 import com.example.university.service.SubjectService;
 import com.example.university.service.SubjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,16 @@ public class SubjectController {
     public String deleteSubjectById(@PathVariable int id){
         service.deleteSubject(id);
         return "Successful";
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SubjectDto> updateSubject(@PathVariable int id, @RequestBody SubjectDto subjectDto){
+        try{
+            SubjectDto dto= service.updateSubject(id,subjectDto);
+            return ResponseEntity.ok(dto);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }
