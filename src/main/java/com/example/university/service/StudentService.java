@@ -7,6 +7,7 @@ import com.example.university.dto.TeacherDto;
 import java.util.List;
 
 public interface StudentService {
+
     List<StudentDto> getAllStudents();
 
     StudentDto getStudentById(int id);
@@ -19,11 +20,13 @@ public interface StudentService {
 
     List<TeacherDto> getAllTeachersOfStudent(int studentId);
 
-    void setTeacherForStudent(int studentId, int TeacherId);
+    void addTeacherToStudent(int studentId, int TeacherId);
 
     List<SubjectDto> getAllSubjectsOfStudent(int studentId);
 
-    void setSubjectForStudent(int studentId, int subjectId);
+    void addSubjectToStudent(int studentId, int subjectId);
 
+    void deleteSubjectFromStudent(int studentId, int subjectId);
 
+    void deleteTeacherFromStudent(int studentId, int teacherId);
 }

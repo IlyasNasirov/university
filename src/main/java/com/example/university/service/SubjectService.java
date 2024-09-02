@@ -5,6 +5,7 @@ import com.example.university.dto.SubjectDto;
 import java.util.List;
 
 public interface SubjectService {
+
     SubjectDto getSubjectById(int id);
 
     List<SubjectDto> getAllSubjects();
@@ -13,5 +14,5 @@ public interface SubjectService {
 
     void deleteSubject(int id);
 
-    SubjectDto updateSubject(int id,SubjectDto subjectDto);
+    SubjectDto updateSubject(int id, SubjectDto subjectDto);
 }

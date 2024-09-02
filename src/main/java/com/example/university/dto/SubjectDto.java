@@ -1,11 +1,16 @@
 package com.example.university.dto;
 
-import com.example.university.entity.Teacher;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
 public class SubjectDto {
     private int id;
+
+    @NotNull(message = "Name cannot be null")
     private String name;
 
 }

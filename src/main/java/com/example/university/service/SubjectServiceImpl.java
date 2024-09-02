@@ -2,6 +2,7 @@ package com.example.university.service;
 
 import com.example.university.dto.SubjectDto;
 import com.example.university.entity.Subject;
+import com.example.university.exception.NoEntityFoundException;
 import com.example.university.mapper.SubjectMapper;
 import com.example.university.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +13,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class SubjectServiceImpl implements SubjectService{
+public class SubjectServiceImpl implements SubjectService {
 
     @Autowired
     SubjectRepository subjectRepository;
-    private final SubjectMapper subjectMapper=SubjectMapper.INSTANCE;
+
+    private final SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
 
     public SubjectDto getSubjectById(int id) {
-        Optional<Subject> optional = subjectRepository.findById(id);
-        return optional.map(subjectMapper::entityToDto).orElse(null);
+        Subject subject = subjectRepository.findById(id)
+                .orElseThrow(() -> new NoEntityFoundException("No such subject found with id: " + id));
+        return subjectMapper.entityToDto(subject);
     }
+
     public List<SubjectDto> getAllSubjects() {
         List<Subject> list = subjectRepository.findAll();
         return list.stream()
@@ -29,21 +33,24 @@ public class SubjectServiceImpl implements SubjectService{
                 .collect(Collectors.toList());
     }
 
-    public SubjectDto saveSubject(SubjectDto Dto) {
+    public SubjectDto saveSubject(SubjectDto Dto) { //здесь обрабатывается тип исключение handleValidationExceptions
         Subject subject = subjectMapper.dtoToEntity(Dto);
         subjectRepository.save(subject);
         return subjectMapper.entityToDto(subject);
     }
 
     public void deleteSubject(int id) {
+        subjectRepository.findById(id)
+                .orElseThrow(() -> new NoEntityFoundException("No such subject found with id: " + id));
         subjectRepository.deleteById(id);
     }
 
     @Override
-    public SubjectDto updateSubject(int id,SubjectDto subjectDto) {
-       Subject subject=subjectRepository.findById(id).orElseThrow(()->new RuntimeException("Student is not exist"));
-       subject.setName(subjectDto.getName());
-       subjectRepository.save(subject);
-       return subjectMapper.entityToDto(subject);
+    public SubjectDto updateSubject(int id, SubjectDto subjectDto) {
+        Subject subject = subjectRepository.findById(id)
+                .orElseThrow(() -> new NoEntityFoundException("No such subject found with id: " + id));
+        subject.setName(subjectDto.getName());
+        subjectRepository.save(subject);
+        return subjectMapper.entityToDto(subject);
     }
 }

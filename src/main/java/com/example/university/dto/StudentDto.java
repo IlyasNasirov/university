@@ -1,21 +1,27 @@
 package com.example.university.dto;
 
-import com.example.university.entity.Teacher;
-import com.sun.istack.NotNull;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
 public class StudentDto {
+
     private int id;
 
+    @NotNull(message = "First name cannot be null")
     private String firstName;
 
+    @NotNull(message = "Last name cannot be null")
     private String lastName;
 
+    @NotNull(message = "Middle name cannot be null")
     private String middleName;
 
+    @Min(value = 1, message = "Age must be greater than 0")
     private int age;
 
 }

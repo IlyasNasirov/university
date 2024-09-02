@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -19,72 +20,67 @@ public class StudentController {
     StudentService service;
 
     @GetMapping
-    public ResponseEntity<List<StudentDto>> getAllStudents(){
-        List<StudentDto> list= service.getAllStudents();
-        return list!=null ? ResponseEntity.ok(list):ResponseEntity.noContent().build();
+    public ResponseEntity<List<StudentDto>> getAllStudents() {
+        List<StudentDto> list = service.getAllStudents();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StudentDto> getStudentById(@PathVariable int id){
-        StudentDto studentDto= service.getStudentById(id);
-        return studentDto !=null ? ResponseEntity.ok(studentDto):ResponseEntity.notFound().build();
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable int id) {
+        StudentDto studentDto = service.getStudentById(id);
+        return new ResponseEntity<>(studentDto, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> saveStudent(@RequestBody StudentDto studentDto){
-        if(studentDto.getFirstName()==null || studentDto.getLastName()==null || studentDto.getMiddleName()==null || studentDto.getAge()==0)
-            return ResponseEntity.badRequest().body("All fields must be filled in");
-        StudentDto dto= service.saveStudent(studentDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    public ResponseEntity<StudentDto> saveStudent(@Valid @RequestBody StudentDto studentDto) {
+        StudentDto dto = service.saveStudent(studentDto);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<StudentDto> updateStudent(@PathVariable int id,@RequestBody StudentDto studentDto){
-        try{
-           StudentDto dto= service.updateStudent(id,studentDto);
-            return ResponseEntity.ok(dto);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<StudentDto> updateStudent(@PathVariable int id, @RequestBody StudentDto studentDto) {
+        StudentDto dto = service.updateStudent(id, studentDto);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
-    public String deleteStudentById(@PathVariable int id){
+    public ResponseEntity<Void> deleteStudentById(@PathVariable int id) {
         service.deleteStudent(id);
-        return "Successful";
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @PutMapping("/{id}/teachers")
-    public ResponseEntity<String> addTeacherForStudent(@PathVariable int id, @RequestParam int setTeacher) {
-        try {
-            service.setTeacherForStudent(id, setTeacher);
-            return ResponseEntity.ok().body("Added teacher to student");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Void> addTeacherToStudent(@PathVariable int id, @RequestParam int setTeacher) {
+        service.addTeacherToStudent(id, setTeacher);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/{id}/teachers")
-    public ResponseEntity<List<TeacherDto>> getAllTeachersForStudent(@PathVariable int id){
-        try{
-           return ResponseEntity.ok(service.getAllTeachersOfStudent(id));
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<List<TeacherDto>> getAllTeachersOfStudent(@PathVariable int id) {
+        List<TeacherDto> teachersDto = service.getAllTeachersOfStudent(id);
+        return new ResponseEntity<>(teachersDto, HttpStatus.OK);
     }
-    @GetMapping("/{id}/subjects")
-    public ResponseEntity<List<SubjectDto>> getAllSubjectsForStudent(@PathVariable int id){
-        try {
-            return ResponseEntity.ok(service.getAllSubjectsOfStudent(id));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    @DeleteMapping("/{id}/teachers")
+    public ResponseEntity<Void> deleteTeacherFromStudent(@PathVariable int id, @RequestParam int setTeacher) {
+        service.deleteTeacherFromStudent(id, setTeacher);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @PutMapping("/{id}/subjects")
-    public ResponseEntity<String> addSubjectForStudent(@PathVariable int id, @RequestParam int setSubject){
-        try {
-            service.setSubjectForStudent(id,setSubject);
-            return ResponseEntity.ok().body("Added subject to student");
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Void> addSubjectToStudent(@PathVariable int id, @RequestParam int setSubject) {
+        service.addSubjectToStudent(id, setSubject);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/subjects")
+    public ResponseEntity<List<SubjectDto>> getAllSubjectsOfStudent(@PathVariable int id) {
+        List<SubjectDto> subjectsDto = service.getAllSubjectsOfStudent(id);
+        return new ResponseEntity<>(subjectsDto, HttpStatus.OK);
+    }
+    @DeleteMapping("/{id}/subjects")
+    public ResponseEntity<Void> deleteSubjectFromStudent(@PathVariable int id, @RequestParam int setSubject) {
+        service.deleteSubjectFromStudent(id, setSubject);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

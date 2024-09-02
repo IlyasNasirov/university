@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,36 +23,30 @@ public class SubjectController {
     @GetMapping
     public ResponseEntity<List<SubjectDto>> getAllSubject(){
         List<SubjectDto> list= service.getAllSubjects();
-        return list!=null ? ResponseEntity.ok(list):ResponseEntity.noContent().build();
+        return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<SubjectDto> getSubjectById(@PathVariable int id){
         SubjectDto subjectDto= service.getSubjectById(id);
-        return subjectDto !=null ? ResponseEntity.ok(subjectDto):ResponseEntity.notFound().build();
+        return new ResponseEntity<>(subjectDto,HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> saveSubject(@RequestBody SubjectDto subjectDto){
-        if(subjectDto.getName()==null)
-            return ResponseEntity.badRequest().body("Name must be filled in");
+    public ResponseEntity<?> saveSubject(@Valid @RequestBody SubjectDto subjectDto){
         SubjectDto dto= service.saveSubject(subjectDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+        return new ResponseEntity<>(dto,HttpStatus.CREATED);
     }
     @DeleteMapping("/{id}")
-    public String deleteSubjectById(@PathVariable int id){
+    public ResponseEntity<Void> deleteSubjectById(@PathVariable int id){
         service.deleteSubject(id);
-        return "Successful";
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<SubjectDto> updateSubject(@PathVariable int id, @RequestBody SubjectDto subjectDto){
-        try{
-            SubjectDto dto= service.updateSubject(id,subjectDto);
-            return ResponseEntity.ok(dto);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+       SubjectDto dto= service.updateSubject(id, subjectDto);
+       return new ResponseEntity<>(dto,HttpStatus.OK);
     }
 
 }

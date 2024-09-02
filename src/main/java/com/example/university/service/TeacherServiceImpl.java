@@ -1,16 +1,21 @@
 package com.example.university.service;
 
+import com.example.university.dto.StudentDto;
 import com.example.university.dto.SubjectDto;
 import com.example.university.dto.TeacherDto;
+import com.example.university.entity.Student;
 import com.example.university.entity.Subject;
 import com.example.university.entity.Teacher;
+import com.example.university.exception.EntityAlreadyAddedException;
+import com.example.university.exception.NoEntityFoundException;
+import com.example.university.mapper.StudentMapper;
 import com.example.university.mapper.SubjectMapper;
 import com.example.university.mapper.TeacherMapper;
+import com.example.university.repository.StudentRepository;
 import com.example.university.repository.SubjectRepository;
 import com.example.university.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -20,80 +25,111 @@ import java.util.stream.Collectors;
 public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
-    TeacherRepository teacherRepository;
+    TeacherRepository teacherRepo;
     @Autowired
-    SubjectRepository subjectRepository;
+    SubjectRepository subjectRepo;
+    @Autowired
+    StudentRepository studentRepo;
 
     TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
+    SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
+    StudentMapper studentMapper = StudentMapper.INSTANCE;
 
     @Override
     public List<TeacherDto> getAllTeachers() {
-        List<Teacher> list = teacherRepository.findAll();
+        List<Teacher> list = teacherRepo.findAll();
         return list.stream()
                 .map(teacherMapper::entityToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
-    public TeacherDto saveTeacher(TeacherDto teacherDto) {
+    public TeacherDto getTeacherById(int id) {
+        Teacher teacher = teacherRepo.findById(id)
+                .orElseThrow(() -> new NoEntityFoundException("No teacher found with id " + id));
+        return teacherMapper.entityToDto(teacher);
+    }
+
+    @Override
+    public TeacherDto saveTeacher(TeacherDto teacherDto) {  //здесь обрабатывается тип исключение handleValidationExceptions
         Teacher teacher = teacherMapper.dtoToEntity(teacherDto);
-        teacherRepository.save(teacher);
+        teacherRepo.save(teacher);
+        return teacherMapper.entityToDto(teacher);
+    }
+
+    @Override
+    public TeacherDto updateTeacher(int teacherId, TeacherDto dto) {
+        Teacher teacher = teacherRepo.findById(teacherId)
+                .orElseThrow(() -> new NoEntityFoundException("Teacher is not found with id " + teacherId));
+        teacher.setFirstName(dto.getFirstName());
+        teacher.setLastName(dto.getLastName());
+        teacher.setMiddleName(dto.getMiddleName());
+        teacher.setAge(dto.getAge());
+        teacherRepo.save(teacher);
         return teacherMapper.entityToDto(teacher);
     }
 
     @Override
     public void deleteTeacher(int id) {
-        teacherRepository.deleteById(id);
+        teacherRepo.findById(id).orElseThrow(() -> new NoEntityFoundException("There is no teacher with id " + id));
+        teacherRepo.deleteById(id);
     }
 
     @Override
-    public TeacherDto getTeacherByIdOrName(String input) {
-        try {
-            int id = Integer.parseInt(input);
-            Teacher teacher = teacherRepository.findById(id).orElse(null);
-            return teacherMapper.entityToDto(teacher);
-        } catch (NumberFormatException e) {
-            Teacher teacher = teacherRepository.findByFirstNameOrLastNameIgnoreCase(input).orElse(null);
-            return teacherMapper.entityToDto(teacher);
+    public void addSubjectToTeacher(int teacherId, SubjectDto subjectDto) { //здесь обрабатывается тип исключение handleValidationExceptions
+        Teacher teacher = teacherRepo.findById(teacherId)
+                .orElseThrow(() -> new NoEntityFoundException("Teacher is not found with id " + teacherId));
+        Subject subject = subjectMapper.dtoToEntity(subjectDto);
+        if (teacher.getSubjects().stream().anyMatch(sub -> sub.getName().equalsIgnoreCase(subject.getName()))) {
+            throw new EntityAlreadyAddedException("Teacher already teaches the subject with name " + subject.getName());
         }
-    }
-
-    @Override
-    public void addSubject(int id, SubjectDto subjectDto) {
-        Subject subject = SubjectMapper.INSTANCE.dtoToEntity(subjectDto);
-        Teacher teacher = teacherRepository.findById(id).orElse(null);
         teacher.getSubjects().add(subject);
         subject.setTeacher(teacher);
-        teacherRepository.save(teacher);
+        teacherRepo.save(teacher);
     }
 
     @Override
-    public void deleteSubject(int teacherId, int subjectId) {
-        Subject subject=subjectRepository.findById(subjectId).orElse(null);
-        Teacher teacher=teacherRepository.findById(teacherId).orElse(null);
+    public List<SubjectDto> getAllSubjectsOfTeacher(int id) {
+        Teacher teacher = teacherRepo.findById(id)
+                .orElseThrow(() -> new NoEntityFoundException("There is no teacher with id " + id));
+        List<Subject> subjects = teacher.getSubjects();
+        return subjects.stream().map(subjectMapper::entityToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteSubjectOfTeacher(int teacherId, int subjectId) {
+        Teacher teacher = teacherRepo.findById(teacherId)
+                .orElseThrow(() -> new NoEntityFoundException("Teacher is not found with id " + teacherId));
+        Subject subject = subjectRepo.findById(subjectId)
+                .orElseThrow(() -> new NoEntityFoundException("Subject is not found with id " + subjectId));
         teacher.getSubjects().remove(subject);
         //check this
-        teacherRepository.save(teacher);
+        teacherRepo.save(teacher);
     }
 
     @Override
-    public List<SubjectDto> getAllSubjectsForTeacher(int id) {
-        Teacher teacher = teacherRepository.findById(id).orElseThrow(() -> new RuntimeException("Teacher with id " + id + " not found"));
-        assert teacher != null;
-        List<Subject> subjects = teacher.getSubjects();
-        return subjects.stream().map(SubjectMapper.INSTANCE::entityToDto).collect(Collectors.toList());
+    public List<StudentDto> getAllStudentsOfTeacher(int teacherId) {
+        Teacher teacher = teacherRepo.findById(teacherId)
+                .orElseThrow(() -> new NoEntityFoundException("Teacher is not found with id " + teacherId));
+        List<Student> students = teacher.getStudents();
+        return students.stream().map(studentMapper::entityToDto).collect(Collectors.toList());
     }
 
     @Override
-    public TeacherDto updateTeacher(int teacherId, TeacherDto dto) {
-        Teacher teacher=teacherRepository.findById(teacherId).orElseThrow(()->new RuntimeException("Teacher is not exist"));
-        teacher.setFirstName(dto.getFirstName());
-        teacher.setLastName(dto.getLastName());
-        teacher.setMiddleName(dto.getMiddleName());
-        teacher.setAge(dto.getAge());
-        teacherRepository.save(teacher);
-        return teacherMapper.entityToDto(teacher);
+    public void deleteStudentOfTeacher(int teacherId, int studentId) {
+        Teacher teacher = teacherRepo.findById(teacherId)
+                .orElseThrow(() -> new NoEntityFoundException("Teacher is not found with id " + teacherId));
+        teacher.getSubjects().remove(studentId);
+    }
+
+    @Override
+    public void addStudentToTeacher(int teacherId, int studentId) {
+        Teacher teacher = teacherRepo.findById(teacherId)
+                .orElseThrow(() -> new NoEntityFoundException("Teacher is not found with id " + teacherId));
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new NoEntityFoundException("Student is not found with id " + studentId));
+        teacher.getStudents().add(student);
+        teacherRepo.save(teacher);
     }
 
 }
