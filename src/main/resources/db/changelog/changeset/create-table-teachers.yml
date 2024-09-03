@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-teachers
+      author: ilyas
+      changes:
+        - createTable:
+            tableName: teachers
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: middle_name
+                  type: varchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: age
+                  type: int
+                  constraints:
+                    nullable: false

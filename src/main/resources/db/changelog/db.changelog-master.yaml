@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-table-students.yml
+  - include:
+      file: db/changelog/changeset/create-table-teachers.yml
+  - include:
+      file: db/changelog/changeset/create-table-subjects.yml
+  - include:
+      file: db/changelog/changeset/add-column-teacher_id-to-subjects.yml
+  - include:
+      file: db/changelog/changeset/create-table-teacher-student.yml
+  - include:
+      file: db/changelog/changeset/create-table-student-subject.yml

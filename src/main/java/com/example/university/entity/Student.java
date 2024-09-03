@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name ="students")
+@Table(name = "students")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +25,7 @@ public class Student {
     private List<Teacher> teachers;
 
     @ManyToMany
-    @JoinTable(
-            name = "student_subject",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
+    @JoinTable(name = "student_subject", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
     @JsonManagedReference
     private List<Subject> subjects;
 

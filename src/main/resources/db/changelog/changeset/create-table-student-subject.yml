@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-student-subject-join-table
+      author: ilyas
+      changes:
+        - createTable:
+            tableName: student_subject
+            columns:
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subject_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            columnNames: student_id, subject_id
+            constraintName: pk_student_subject
+            tableName: student_subject
+
+        - addForeignKeyConstraint:
+            baseTableName: student_subject
+            baseColumnNames: student_id
+            constraintName: fk_student_subject_student
+            referencedTableName: students
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: student_subject
+            baseColumnNames: subject_id
+            constraintName: fk_student_subject_subject
+            referencedTableName: subjects
+            referencedColumnNames: id
+            onDelete: CASCADE

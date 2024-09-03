@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-teacher_id
+      author: ilyas
+      changes:
+        - addColumn:
+            tableName: subjects
+            columns:
+              - column:
+                  name: teacher_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: subjects
+            baseColumnNames: teacher_id
+            referencedTableName: teachers
+            referencedColumnNames: id
+            constraintName: fk_subjects_teachers

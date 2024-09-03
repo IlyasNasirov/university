@@ -28,14 +28,9 @@ public class Teacher {
     private List<Subject> subjects;
 
     @ManyToMany
-    @JoinTable(
-            name = "teacher_student",
-            joinColumns = @JoinColumn(name = "teacher_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
+    @JoinTable(name = "teacher_student", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "student_id"))
     @JsonManagedReference
     private List<Student> students;
-
 
 
 }

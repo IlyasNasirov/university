@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-teacher-student-join-table
+      author: ilyas
+      changes:
+        - createTable:
+            tableName: teacher_student
+            columns:
+              - column:
+                  name: teacher_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: student_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            columnNames: teacher_id, student_id
+            constraintName: pk_teacher_student
+            tableName: teacher_student
+
+        - addForeignKeyConstraint:
+            baseTableName: teacher_student
+            baseColumnNames: teacher_id
+            constraintName: fk_teacher_student_teacher
+            referencedTableName: teachers
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseTableName: teacher_student
+            baseColumnNames: student_id
+            constraintName: fk_teacher_student_student
+            referencedTableName: students
+            referencedColumnNames: id
+            onDelete: CASCADE
