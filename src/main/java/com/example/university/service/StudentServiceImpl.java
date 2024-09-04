@@ -89,10 +89,8 @@ public class StudentServiceImpl implements StudentService {
         if (student.getTeachers().contains(teacher)) {
             throw new EntityAlreadyAddedException("There is already a teacher with id " + teacherId);
         }
-        student.getTeachers().add(teacher);
         teacher.getStudents().add(student);
-        studentRepo.save(student);
-        teacherRepo.save(teacher);  //надо ли выполнять это действия?
+        teacherRepo.save(teacher);  //(надо ли выполнять это действия?) решено,сохраняем только по teacher
     }
 
     @Override
