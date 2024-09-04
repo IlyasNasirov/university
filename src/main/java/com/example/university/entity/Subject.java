@@ -1,16 +1,19 @@
 package com.example.university.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
+import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
+@Setter
 @Entity
-@Data
-@Table(name = "subjects")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

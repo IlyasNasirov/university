@@ -1,7 +1,7 @@
 package com.example.university.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
+import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
-@Data
-@Table(name = "teachers")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Teacher {
 
     @Id
