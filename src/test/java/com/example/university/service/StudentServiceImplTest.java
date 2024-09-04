@@ -13,6 +13,7 @@ import com.example.university.mapper.SubjectMapper;
 import com.example.university.mapper.TeacherMapper;
 import com.example.university.repository.StudentRepository;
 
+import com.example.university.repository.SubjectRepository;
 import com.example.university.repository.TeacherRepository;
 import org.checkerframework.checker.nullness.Opt;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,8 @@ public class StudentServiceImplTest {
     private StudentRepository studentRepository;
     @Mock
     private TeacherRepository teacherRepository;
+    @Mock
+    private SubjectRepository subjectRepository;
     @Mock
     private StudentMapper studentMapper;
     @Mock
@@ -145,59 +148,93 @@ public class StudentServiceImplTest {
     }
 
     @Test
-    void addTeacherToStudent_WhenStudentAlreadyHasTeacher_ShouldThrownEntityAlreadyAddedException(){
+    void addTeacherToStudent_WhenStudentAlreadyHasTeacher_ShouldThrownEntityAlreadyAddedException() {
         Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).teachers(new ArrayList<>()).build();
-        Teacher teacher=Teacher.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(31).build();
+        Teacher teacher = Teacher.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(31).build();
         when(studentRepository.findById(1)).thenReturn(Optional.of(student));
         when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
         student.getTeachers().add(teacher);
 
-        assertThrows(EntityAlreadyAddedException.class,()->service.addTeacherToStudent(student.getId(),teacher.getId()));
-        verify(studentRepository,never()).save(any(Student.class));
+        assertThrows(EntityAlreadyAddedException.class, () -> service.addTeacherToStudent(student.getId(), teacher.getId()));
+        verify(studentRepository, never()).save(any(Student.class));
     }
 
     @Test
-    void addTeacherToStudent_WhenTeacherDoesntExists_ShouldAddedTeacher(){
+    void addTeacherToStudent_WhenTeacherDoesntExists_ShouldAddedTeacher() {
         Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).teachers(new ArrayList<>()).build();
-        Teacher teacher=Teacher.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(31).students(new ArrayList<>()).build();
+        Teacher teacher = Teacher.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(31).students(new ArrayList<>()).build();
         when(studentRepository.findById(1)).thenReturn(Optional.of(student));
         when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
 
-        service.addTeacherToStudent(student.getId(),teacher.getId());
-        verify(teacherRepository,times(1)).save(any(Teacher.class));
+        service.addTeacherToStudent(student.getId(), teacher.getId());
+        verify(teacherRepository, times(1)).save(any(Teacher.class));
     }
 
-//    @Test
-//    void getAllTeachersOfStudent_WhenStudentDoesNotExist_ShouldThrownNoEntityFoundException(){
-//        when(studentRepository.findById(1)).thenReturn(Optional.empty());
-//        assertThrows(NoEntityFoundException.class, () -> service.getAllTeachersOfStudent(1));
-//    }
-
     @Test
-    void getAllTeachersOfStudent_WhenStudentHasTeachers_ShouldReturnAllTeachers(){
+    void getAllTeachersOfStudent_WhenStudentHasTeachers_ShouldReturnAllTeachers() {
         Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).teachers(new ArrayList<>()).build();
-        Teacher teacher=Teacher.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(31).students(new ArrayList<>()).build();
+        Teacher teacher = Teacher.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(31).students(new ArrayList<>()).build();
         student.getTeachers().add(teacher);
 
         when(studentRepository.findById(1)).thenReturn(Optional.of(student));
-        List<TeacherDto> teacherDtos=student.getTeachers().stream().map(teacherMapper::entityToDto).collect(Collectors.toList());
+        List<TeacherDto> teacherDtos = student.getTeachers().stream().map(teacherMapper::entityToDto).collect(Collectors.toList());
 
-        assertEquals(teacherDtos,service.getAllTeachersOfStudent(student.getId()));
-        verify(studentRepository,times(1)).findById(student.getId());
+        assertEquals(teacherDtos, service.getAllTeachersOfStudent(student.getId()));
+        verify(studentRepository, times(1)).findById(student.getId());
     }
 
     @Test
-    void getAllSubjectsOfStudent_WhenStudentHasSubjects_ShouldReturnAllSubjects(){
+    void getAllSubjectsOfStudent_WhenStudentHasSubjects_ShouldReturnAllSubjects() {
         Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).subjects(new ArrayList<>()).build();
-        Subject subject= Subject.builder().id(1).name("Math").build();
+        Subject subject = Subject.builder().id(1).name("Math").build();
         student.getSubjects().add(subject);
 
         when(studentRepository.findById(1)).thenReturn(Optional.of(student));
-        List<SubjectDto> subjectDtos=student.getSubjects().stream().map(subjectMapper::entityToDto).collect(Collectors.toList());
+        List<SubjectDto> subjectDtos = student.getSubjects().stream().map(subjectMapper::entityToDto).collect(Collectors.toList());
 
-        assertEquals(subjectDtos,service.getAllSubjectsOfStudent(student.getId()));
-        verify(studentRepository,times(1)).findById(student.getId());
+        assertEquals(subjectDtos, service.getAllSubjectsOfStudent(student.getId()));
+        verify(studentRepository, times(1)).findById(student.getId());
     }
 
+    @Test
+    void addSubjectToStudent_WhenStudentAlreadyHasSubject_ShouldThrownEntityAlreadyAddedException() {
+        Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).subjects(new ArrayList<>()).build();
+        Subject subject = Subject.builder().id(1).name("Math").build();
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
+        when(subjectRepository.findById(1)).thenReturn(Optional.of(subject));
+        student.getSubjects().add(subject);
 
+        assertThrows(EntityAlreadyAddedException.class, () -> service.addSubjectToStudent(student.getId(), subject.getId()));
+        verify(studentRepository, never()).save(any(Student.class));
+    }
+
+    @Test
+    void addSubjectToStudent_WhenSubjectDoesntExists_ShouldAddedSubject() {
+        Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).subjects(new ArrayList<>()).build();
+        Subject subject = Subject.builder().id(1).name("Math").build();
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
+        when(subjectRepository.findById(1)).thenReturn(Optional.of(subject));
+        service.addSubjectToStudent(student.getId(), subject.getId());
+        verify(studentRepository, times(1)).save(any(Student.class));
+    }
+
+    @Test
+    void deleteSubjectFromStudent_WhenSubjectExists_ShouldDeleteSubject() {
+        Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).subjects(new ArrayList<>()).build();
+        Subject subject = Subject.builder().id(1).name("Math").build();
+        student.getSubjects().add(subject);
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
+        when(subjectRepository.findById(1)).thenReturn(Optional.of(subject));
+        service.deleteSubjectFromStudent(student.getId(), subject.getId());
+    }
+
+    @Test
+    void deleteTeacherFromStudent_WhenTeacherExists_ShouldDeleteTeacher() {
+        Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).teachers(new ArrayList<>()).build();
+        Teacher teacher = Teacher.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(31).students(new ArrayList<>()).build();
+        student.getTeachers().add(teacher);
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
+        when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
+        service.deleteTeacherFromStudent(student.getId(), teacher.getId());
+    }
 }

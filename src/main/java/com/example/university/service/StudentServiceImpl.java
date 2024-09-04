@@ -90,7 +90,7 @@ public class StudentServiceImpl implements StudentService {
             throw new EntityAlreadyAddedException("There is already a teacher with id " + teacherId);
         }
         teacher.getStudents().add(student);
-        teacherRepo.save(teacher);  //(надо ли выполнять это действия?) решено,сохраняем только по teacher
+        teacherRepo.save(teacher);
     }
 
     @Override
@@ -101,7 +101,6 @@ public class StudentServiceImpl implements StudentService {
         return teachers.stream().map(teacherMapper::entityToDto).collect(Collectors.toList());
     }
 
-    //нужно получать только свои предметы из учителей
     @Override
     public List<SubjectDto> getAllSubjectsOfStudent(int studentId) {
         Student student = studentRepo.findById(studentId)
@@ -119,7 +118,6 @@ public class StudentServiceImpl implements StudentService {
         if (student.getSubjects().contains(subject))
             throw new EntityAlreadyAddedException("There is already a subject with id " + subjectId);
         student.getSubjects().add(subject);
-        subject.getStudents().add(student);
         studentRepo.save(student);
     }
 
@@ -139,9 +137,7 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new NoEntityFoundException("There is no student with id " + studentId));
         Teacher teacher = teacherRepo.findById(teacherId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no teacher with id " + teacherId));
-        student.getTeachers().remove(teacher);
         teacher.getStudents().remove(student);
-        studentRepo.save(student);
         teacherRepo.save(teacher);
     }
 
