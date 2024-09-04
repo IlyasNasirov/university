@@ -5,18 +5,21 @@ import com.example.university.entity.Student;
 import com.example.university.exception.NoEntityFoundException;
 import com.example.university.mapper.StudentMapper;
 import com.example.university.repository.StudentRepository;
+import org.checkerframework.checker.nullness.Opt;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,11 +29,12 @@ public class StudentServiceImplTest {
     private StudentServiceImpl service;
     @Mock
     private StudentRepository studentRepository;
+    @Mock
+    private StudentMapper studentMapper;
 
     private Student st1;
     private Student st2;
     private Student st3;
-    private final StudentMapper studentMapper = StudentMapper.INSTANCE;
 
     @BeforeEach
     void init() {
@@ -46,14 +50,14 @@ public class StudentServiceImplTest {
         List<StudentDto> expectedDtos = students.stream()
                 .map(studentMapper::entityToDto).collect(Collectors.toList());
         List<StudentDto> actualDtos = service.getAllStudents();
-        Assertions.assertEquals(expectedDtos, actualDtos);
+        assertEquals(expectedDtos, actualDtos);
         verify(studentRepository, times(1)).findAll();
     }
 
     @Test
     void getStudentById_WhenStudentDoesNotExist_ShouldThrowNoEntityFoundException() {
         when(studentRepository.findById(1)).thenReturn(Optional.empty());
-        Assertions.assertThrows(NoEntityFoundException.class, () -> service.getStudentById(1));
+        assertThrows(NoEntityFoundException.class, () -> service.getStudentById(1));
         verify(studentRepository, times(1)).findById(1);
     }
 
@@ -61,27 +65,40 @@ public class StudentServiceImplTest {
     void getStudentById_WhenStudentExists_ReturnsStudent() {
         when(studentRepository.findById(1)).thenReturn(Optional.of(st1));
         StudentDto studentDto = studentMapper.entityToDto(st1);
-        Assertions.assertEquals(studentDto, service.getStudentById(1));
+        assertEquals(studentDto, service.getStudentById(1));
         verify(studentRepository, times(1)).findById(1);
     }
 
     @Test
     void saveStudent_WhenStudentIsSaved_ReturnsStudentDto() {
-        when(studentRepository.save(any(Student.class))).thenReturn(st1);
-        StudentDto expectedDto = studentMapper.entityToDto(st1);
-        StudentDto actualDto = service.saveStudent(studentMapper.entityToDto(st1));
-        Assertions.assertEquals(expectedDto, actualDto);
+        Student student = Student.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(30).build();
+        StudentDto studentDto=studentMapper.entityToDto(student);
+
+        when(studentMapper.dtoToEntity(studentDto)).thenReturn(student);
+        when(studentRepository.save(any(Student.class))).thenReturn(student);
+        when(studentMapper.entityToDto(student)).thenReturn(studentDto);
+
+        StudentDto actualDto = service.saveStudent(studentMapper.entityToDto(student));
+        assertEquals(studentDto, actualDto);
         verify(studentRepository, times(1)).save(any(Student.class));
     }
 
-//    @Test
-//    void updateStudent_WhenStudentExists_ShouldUpdateStudent() {
-//        Student existingStudent=Student.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(30).build();
-//        StudentDto studentDto=StudentDto.builder().id(1).firstName("igor").lastName("ivanov").middleName("ivanovich").age(30).build();
-//
-//        when(studentRepository.findById())
-//
-//    }
+    @Test
+    void updateStudent_WhenStudentExists_ShouldUpdateStudent() {
+        Student existingStudent = Student.builder().id(1).firstName("ivan").lastName("ivanov").middleName("ivanovich").age(30).build();
+        StudentDto studentDto = StudentDto.builder().id(1).firstName("igor").lastName("ivanov").middleName("ivanovich").age(30).build();
+
+        when(studentRepository.findById(existingStudent.getId())).thenReturn(Optional.of(existingStudent));
+        when(studentRepository.save(existingStudent)).thenReturn(existingStudent);
+        when(studentMapper.entityToDto(existingStudent)).thenReturn(studentDto);
+
+        StudentDto updatedStudentDto = service.updateStudent(existingStudent.getId(), studentDto);
+        assertEquals(studentDto, updatedStudentDto);
+
+        verify(studentRepository, times(1)).save(existingStudent);
+        verify(studentMapper, times(1)).entityToDto(existingStudent);
+
+    }
 
     @Test
     void deleteStudent_WhenStudentExists_ShouldDeleteStudent() {
@@ -94,8 +111,8 @@ public class StudentServiceImplTest {
     @Test
     void deleteStudent_WhenStudentDoesNotExist_ShouldThrowNoEntityFoundException() {
         when(studentRepository.findById(st1.getId())).thenReturn(Optional.empty());
-        NoEntityFoundException exception = Assertions.assertThrows(NoEntityFoundException.class, () -> service.deleteStudent(st1.getId()));
-        Assertions.assertEquals("There is no student with id " + st1.getId(),exception.getMessage());
+        NoEntityFoundException exception = assertThrows(NoEntityFoundException.class, () -> service.deleteStudent(st1.getId()));
+        assertEquals("There is no student with id " + st1.getId(), exception.getMessage());
         verify(studentRepository, never()).deleteById(st1.getId());
     }
 

@@ -29,10 +29,16 @@ public class StudentServiceImpl implements StudentService {
     TeacherRepository teacherRepo;
     @Autowired
     SubjectRepository subjectRepo;
+    @Autowired
+    private StudentMapper studentMapper;
+    @Autowired
+    private TeacherMapper teacherMapper;
+    @Autowired
+    private SubjectMapper subjectMapper;
 
-    private final StudentMapper studentMapper = StudentMapper.INSTANCE;
-    private final SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
-    private final TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
+//    private final StudentMapper studentMapper = StudentMapper.INSTANCE;
+//    private final SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
+//    private final TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
 
     @Override
     public StudentDto getStudentById(int id) {

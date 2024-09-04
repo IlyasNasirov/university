@@ -8,12 +8,14 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "students")
 @Getter
 @Setter
-@Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@EqualsAndHashCode
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
