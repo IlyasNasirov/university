@@ -15,7 +15,6 @@ import com.example.university.repository.StudentRepository;
 import com.example.university.repository.SubjectRepository;
 import com.example.university.repository.TeacherRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
