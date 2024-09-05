@@ -2,9 +2,7 @@ package com.example.university.dto;
 
 import com.example.university.entity.Student;
 import com.example.university.entity.Subject;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -13,6 +11,8 @@ import java.util.Set;
 
 @Getter
 @Setter
+@EqualsAndHashCode
+@Builder
 public class TeacherDto {
 
     private int id;

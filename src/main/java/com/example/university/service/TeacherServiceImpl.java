@@ -116,7 +116,10 @@ public class TeacherServiceImpl implements TeacherService {
     public void deleteStudentOfTeacher(int teacherId, int studentId) {
         Teacher teacher = teacherRepo.findById(teacherId)
                 .orElseThrow(() -> new NoEntityFoundException("Teacher is not found with id " + teacherId));
-        teacher.getSubjects().remove(studentId);
+        Student student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new NoEntityFoundException("Student is not found with id " + studentId));
+        teacher.getStudents().remove(student);
+        teacherRepo.save(teacher);
     }
 
     @Override
