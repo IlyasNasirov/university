@@ -14,6 +14,7 @@ import com.example.university.mapper.TeacherMapper;
 import com.example.university.repository.StudentRepository;
 import com.example.university.repository.SubjectRepository;
 import com.example.university.repository.TeacherRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +23,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
 
-    @Autowired
-    TeacherRepository teacherRepo;
-    @Autowired
-    SubjectRepository subjectRepo;
-    @Autowired
-    StudentRepository studentRepo;
-
-    TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
-    SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
-    StudentMapper studentMapper = StudentMapper.INSTANCE;
+    private TeacherRepository teacherRepo;
+    private SubjectRepository subjectRepo;
+    private StudentRepository studentRepo;
+    private TeacherMapper teacherMapper;
+    private SubjectMapper subjectMapper;
+    private StudentMapper studentMapper;
 
     @Override
     public List<TeacherDto> getAllTeachers() {

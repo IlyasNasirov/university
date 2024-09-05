@@ -14,31 +14,23 @@ import com.example.university.mapper.TeacherMapper;
 import com.example.university.repository.StudentRepository;
 import com.example.university.repository.SubjectRepository;
 import com.example.university.repository.TeacherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
-    @Autowired
-    StudentRepository studentRepo;
-    @Autowired
-    TeacherRepository teacherRepo;
-    @Autowired
-    SubjectRepository subjectRepo;
-    @Autowired
+    private StudentRepository studentRepo;
+    private TeacherRepository teacherRepo;
+    private SubjectRepository subjectRepo;
     private StudentMapper studentMapper;
-    @Autowired
     private TeacherMapper teacherMapper;
-    @Autowired
     private SubjectMapper subjectMapper;
 
-//    private final StudentMapper studentMapper = StudentMapper.INSTANCE;
-//    private final SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
-//    private final TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
 
     @Override
     public StudentDto getStudentById(int id) {
@@ -123,7 +115,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteSubjectFromStudent(int studentId, int subjectId) {
-        Student student=studentRepo.findById(studentId)
+        Student student = studentRepo.findById(studentId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no student with id " + studentId));
         Subject subject = subjectRepo.findById(subjectId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no subject with id " + subjectId));
@@ -133,7 +125,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteTeacherFromStudent(int studentId, int teacherId) {
-        Student student=studentRepo.findById(studentId)
+        Student student = studentRepo.findById(studentId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no student with id " + studentId));
         Teacher teacher = teacherRepo.findById(teacherId)
                 .orElseThrow(() -> new NoEntityFoundException("There is no teacher with id " + teacherId));

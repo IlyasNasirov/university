@@ -5,6 +5,7 @@ import com.example.university.entity.Subject;
 import com.example.university.exception.NoEntityFoundException;
 import com.example.university.mapper.SubjectMapper;
 import com.example.university.repository.SubjectRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
 
-    @Autowired
-    SubjectRepository subjectRepository;
-
-    private final SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
+    private SubjectRepository subjectRepository;
+    private SubjectMapper subjectMapper;
 
     public SubjectDto getSubjectById(int id) {
         Subject subject = subjectRepository.findById(id)
