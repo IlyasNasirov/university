@@ -191,10 +191,14 @@ class TeacherServiceImplTest {
     }
 
     @Test
-    void deleteStudentOfTeacher() {
+    void addStudentToTeacher_WhenStudentDoesntExists_ShouldAddedStudent() {
+        Teacher teacher = Teacher.builder().id(1).firstName("igor").lastName("jekov").middleName("Mixailovich").age(31).students(new ArrayList<>()).build();
+        Student student = Student.builder().id(1).firstName("ilyas").lastName("nasirov").middleName("urakbayevich").age(25).teachers(new ArrayList<>()).build();
+        when(teacherRepository.findById(1)).thenReturn(Optional.of(teacher));
+        when(studentRepository.findById(1)).thenReturn(Optional.of(student));
+        service.addStudentToTeacher(teacher.getId(), student.getId());
+        verify(teacherRepository, times(1)).save(teacher);
     }
 
-    @Test
-    void addStudentToTeacher() {
-    }
+
 }
