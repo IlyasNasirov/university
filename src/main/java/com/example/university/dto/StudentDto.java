@@ -4,9 +4,15 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+/**
+ * Data Transfer Object (DTO) for a student.
+ *
+ * <p>This class is used to transfer student data between different layers or components
+ * of the application. It includes basic student information and validation constraints
+ * for the fields.
+ */
 
 @Getter
 @Setter

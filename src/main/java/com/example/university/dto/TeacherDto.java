@@ -1,13 +1,20 @@
 package com.example.university.dto;
 
-import com.example.university.entity.Student;
-import com.example.university.entity.Subject;
-import lombok.*;
-
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Set;
+
+
+/**
+ * Data Transfer Object (DTO) for a teacher.
+ *
+ * <p>This class is used to transfer teacher data between different layers or components
+ * of the application. It includes basic teacher information and validation constraints
+ * for the fields.
+ */
 
 @Getter
 @Setter
