@@ -5,6 +5,13 @@ import com.example.university.dto.SubjectDto;
 import com.example.university.dto.TeacherDto;
 
 import java.util.List;
+/**
+ * Service interface for managing {@link com.example.university.entity.Teacher} entities.
+ *
+ * <p>This interface defines the contract for business logic related to teachers, such as
+ * operations for creating, reading, updating, and deleting teacher data. Implementations
+ * of this interface provide the actual business logic.
+ */
 
 public interface TeacherService {
 

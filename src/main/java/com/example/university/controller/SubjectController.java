@@ -13,11 +13,27 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * REST controller for managing {@link com.example.university.entity.Subject} entities.
+ *
+ * <p>This controller handles HTTP requests related to subject operations, such as creating,
+ * reading, updating, and deleting subject data. It is mapped to the {@code /api/subjects} endpoint.
+ *
+ * <p>The {@code @RestController} annotation indicates that this class is a REST controller.
+ * The {@code @Tag} annotation is used for OpenAPI documentation, tagging this controller
+ * with the name "Subject".
+ */
 @Tag(name = "Subject")
 @RestController
 @RequestMapping("/api/subjects")
@@ -27,7 +43,8 @@ public class SubjectController {
     SubjectService service;
 
     @Operation(summary = "Get all subjects", description = "Returns a list of subjects")
-    @ApiResponse(responseCode = "200", description = "List of subjects", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SubjectDto.class))))
+    @ApiResponse(responseCode = "200", description = "List of subjects",
+            content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = SubjectDto.class))))
     @GetMapping
     public ResponseEntity<List<SubjectDto>> getAllSubject() {
         List<SubjectDto> list = service.getAllSubjects();
@@ -36,7 +53,8 @@ public class SubjectController {
 
     @Operation(summary = "Get subject by id", description = "Returns a subject by id. If there is no subject with such id, returns 404.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Subject found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SubjectDto.class))),
+            @ApiResponse(responseCode = "200", description = "Subject found",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SubjectDto.class))),
             @ApiResponse(responseCode = "404", description = "Subject not found", content = @Content)
     })
     @GetMapping("/{id}")
@@ -47,7 +65,8 @@ public class SubjectController {
 
     @Operation(summary = "Create new subject", description = "Creates a new subject")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Subject created", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SubjectDto.class))),
+            @ApiResponse(responseCode = "201", description = "Subject created",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SubjectDto.class))),
             @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content)
     })
     @PostMapping
@@ -69,12 +88,14 @@ public class SubjectController {
 
     @Operation(summary = "Update subject by id", description = "Updates a subject by id. If there is no subject with such id, returns 404.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Subject updated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = SubjectDto.class))),
+            @ApiResponse(responseCode = "200", description = "Subject updated",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = SubjectDto.class))),
             @ApiResponse(responseCode = "400", description = "Validation failed", content = @Content),
             @ApiResponse(responseCode = "404", description = "Subject not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<SubjectDto> updateSubject(@Parameter(description = "Id of the subject") @PathVariable int id, @RequestBody SubjectDto subjectDto) {
+    public ResponseEntity<SubjectDto> updateSubject(@Parameter(description = "Id of the subject") @PathVariable int id,
+                                                    @RequestBody SubjectDto subjectDto) {
         SubjectDto dto = service.updateSubject(id, subjectDto);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
